@@ -47,4 +47,4 @@ fi
 echo ""
 echo "All branches created successfully!"
 echo "Available branches:"
-git branch -r | grep -E '(dev|stg)' || echo "No dev/stg branches found"
+git branch -r | { grep -E '(dev|stg)' || echo "No dev/stg branches found"; }
