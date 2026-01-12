@@ -1,0 +1,47 @@
+name: Create Dev and Stg Branches
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-branches:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Create dev branch if not exists
+        run: |
+          if ! git ls-remote --heads origin dev | grep dev; then
+            echo "Creating dev branch..."
+            git checkout -b dev
+            git push origin dev
+            echo "✓ dev branch created"
+          else
+            echo "✓ dev branch already exists"
+          fi
+      
+      - name: Create stg branch if not exists
+        run: |
+          if ! git ls-remote --heads origin stg | grep stg; then
+            echo "Creating stg branch..."
+            git checkout -b stg
+            git push origin stg
+            echo "✓ stg branch created"
+          else
+            echo "✓ stg branch already exists"
+          fi
+      
+      - name: Summary
+        run: |
+          echo "Branch creation completed!"
+          echo "Available branches:"
+          git ls-remote --heads origin
