@@ -23,7 +23,7 @@ git checkout main || git checkout -b main origin/main || { echo "Error: Could no
 git pull origin main || echo "Note: Could not pull latest main"
 
 # Create dev branch
-if git ls-remote --heads origin dev | grep dev > /dev/null 2>&1; then
+if git ls-remote --heads origin dev | grep -q 'refs/heads/dev$'; then
     echo "✓ dev branch already exists"
 else
     echo "Creating dev branch from main..."
@@ -34,7 +34,7 @@ else
 fi
 
 # Create stg branch
-if git ls-remote --heads origin stg | grep stg > /dev/null 2>&1; then
+if git ls-remote --heads origin stg | grep -q 'refs/heads/stg$'; then
     echo "✓ stg branch already exists"
 else
     echo "Creating stg branch from main..."
@@ -47,4 +47,8 @@ fi
 echo ""
 echo "All branches created successfully!"
 echo "Available branches:"
-git branch -r | { grep -E '(dev|stg)' || echo "No dev/stg branches found"; }
+if git branch -r | grep -E 'origin/(dev|stg)$' > /dev/null 2>&1; then
+    git branch -r | grep -E 'origin/(dev|stg)$'
+else
+    echo "No dev/stg branches found"
+fi
