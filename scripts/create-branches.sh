@@ -2,6 +2,8 @@
 
 # Script to create dev and stg branches
 # This script creates the development and staging branches if they don't exist
+#
+# Usage: chmod +x scripts/create-branches.sh && ./scripts/create-branches.sh
 
 set -e
 
@@ -47,8 +49,9 @@ fi
 echo ""
 echo "All branches created successfully!"
 echo "Available branches:"
-if git branch -r | grep -E 'origin/(dev|stg)$' > /dev/null 2>&1; then
-    git branch -r | grep -E 'origin/(dev|stg)$'
+BRANCHES=$(git branch -r | grep -E 'origin/(dev|stg)$' || true)
+if [ -n "$BRANCHES" ]; then
+    echo "$BRANCHES"
 else
     echo "No dev/stg branches found"
 fi
