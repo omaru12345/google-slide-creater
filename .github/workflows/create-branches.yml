@@ -17,11 +17,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
       
       - name: Create dev branch if not exists
         run: |
           if ! git ls-remote --heads origin dev | grep dev; then
-            echo "Creating dev branch..."
+            echo "Creating dev branch from main..."
             git checkout -b dev
             git push origin dev
             echo "✓ dev branch created"
@@ -29,10 +30,14 @@ jobs:
             echo "✓ dev branch already exists"
           fi
       
+      - name: Checkout main for stg branch
+        if: success()
+        run: git checkout main
+      
       - name: Create stg branch if not exists
         run: |
           if ! git ls-remote --heads origin stg | grep stg; then
-            echo "Creating stg branch..."
+            echo "Creating stg branch from main..."
             git checkout -b stg
             git push origin stg
             echo "✓ stg branch created"
